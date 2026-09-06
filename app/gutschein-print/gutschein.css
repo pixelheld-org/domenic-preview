@@ -1,0 +1,107 @@
+/* ========================================
+   Gutschein Print Styles – A6 Quer
+   148mm × 105mm (landscape)
+   ======================================== */
+
+@page {
+  size: 148mm 105mm;
+  margin: 0;
+}
+
+.gutschein-body {
+  margin: 0;
+  padding: 0;
+  background: white;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  color-adjust: exact;
+}
+
+/* Each voucher page */
+.gutschein-page {
+  width: 148mm;
+  height: 105mm;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  page-break-after: always;
+  break-after: page;
+  background: white;
+}
+
+.gutschein-page:last-child {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* Screen preview: center pages with gap */
+@media screen {
+  .gutschein-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 32px 24px 48px;
+    background: #e5e5e5;
+    min-height: 100vh;
+  }
+
+  .gutschein-page {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+    border-radius: 4px;
+  }
+
+  .gutschein-page-label {
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-top: -12px;
+    margin-bottom: -8px;
+  }
+}
+
+/* Hide site chrome (Navbar, Footer) on gutschein pages */
+body:has(.gutschein-body) header,
+body:has(.gutschein-body) footer,
+body:has(.gutschein-body) nav {
+  display: none !important;
+}
+
+body:has(.gutschein-body) {
+  background: #e5e5e5 !important;
+}
+
+body:has(.gutschein-body) .mx-auto {
+  max-width: none !important;
+  padding: 0 !important;
+}
+
+body:has(.gutschein-body) .min-h-screen,
+body:has(.gutschein-body) .min-h-full {
+  display: block !important;
+}
+
+/* Print: clean removal of screen-only decoration */
+@media print {
+  body:has(.gutschein-body) {
+    background: white !important;
+  }
+
+  .gutschein-body {
+    background: white;
+    padding: 0;
+    gap: 0;
+  }
+
+  .gutschein-page {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .print-hint,
+  .gutschein-page-label {
+    display: none !important;
+  }
+}

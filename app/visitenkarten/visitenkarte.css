@@ -1,0 +1,106 @@
+/* ========================================
+   Visitenkarten Print Styles – 85mm × 55mm (landscape)
+   Standard EU Visitenkarte. 10 Karten passen auf einen A4-Bogen
+   (2 Spalten × 5 Zeilen).
+   ======================================== */
+
+@page {
+  size: 85mm 55mm;
+  margin: 0;
+}
+
+.visitenkarte-body {
+  margin: 0;
+  padding: 0;
+  background: white;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  color-adjust: exact;
+}
+
+.visitenkarte-page {
+  width: 85mm;
+  height: 55mm;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  page-break-after: always;
+  break-after: page;
+  background: white;
+}
+
+.visitenkarte-page:last-child {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* Screen preview */
+@media screen {
+  .visitenkarte-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 32px 24px 48px;
+    background: #e5e5e5;
+    min-height: 100vh;
+  }
+
+  .visitenkarte-page {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+    border-radius: 3px;
+  }
+
+  .visitenkarte-page-label {
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-top: -12px;
+    margin-bottom: -8px;
+  }
+}
+
+/* Hide site chrome on visitenkarten-Seiten */
+body:has(.visitenkarte-body) header,
+body:has(.visitenkarte-body) footer,
+body:has(.visitenkarte-body) nav {
+  display: none !important;
+}
+
+body:has(.visitenkarte-body) {
+  background: #e5e5e5 !important;
+}
+
+body:has(.visitenkarte-body) .mx-auto {
+  max-width: none !important;
+  padding: 0 !important;
+}
+
+body:has(.visitenkarte-body) .min-h-screen,
+body:has(.visitenkarte-body) .min-h-full {
+  display: block !important;
+}
+
+@media print {
+  body:has(.visitenkarte-body) {
+    background: white !important;
+  }
+
+  .visitenkarte-body {
+    background: white;
+    padding: 0;
+    gap: 0;
+  }
+
+  .visitenkarte-page {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .print-hint,
+  .visitenkarte-page-label {
+    display: none !important;
+  }
+}
