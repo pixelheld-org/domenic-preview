@@ -6,7 +6,6 @@ import { EditKit } from "@/editkit/edit-kit";
 import { PreviewSafety } from "@/components/PreviewSafety";
 import { JsonLd } from "@/components/JsonLd";
 import Script from "next/script";
-import CookieConsentComponent from "@/components/CookieConsent";
 import { SanityLive } from "@/sanity/lib/live";
 import { Navbar } from "@/components/Navbar";
 
@@ -103,7 +102,6 @@ export default async function RootLayout({
         <SanityLive />
         <EditKit />
         <PreviewSafety />
-        <CookieConsentComponent />
       </body>
     </html>
   );

@@ -45,3 +45,6 @@ Angebot_*.pdf
 
 .pixelheld/
 .pixelmeister/
+
+.playwright-cli/
+output/playwright/
