@@ -37,7 +37,7 @@ export const settingsSchema = defineType({
       type: "text",
       rows: 2,
       initialValue:
-        "Gezielte Heilmassage bei Verspannungen, Stress und Rückenbeschwerden. Ihr Raum für Entspannung und Heilung in Wien 1080.",
+        "Gezielte Heilmassage bei Verspannungen und Rückenbeschwerden. Spürbare Entlastung in Wien 1080.",
     }),
     defineField({
       name: "address",

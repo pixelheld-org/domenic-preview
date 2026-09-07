@@ -21,7 +21,7 @@ export function Hero({
   const headlineAccent = sanitySettings?.heroHeadlineAccent ?? "Tiefe Entspannung.";
   const subheading =
     sanitySettings?.heroSubheading ??
-    "Gezielte Heilmassage bei Verspannungen, Stress und Rückenbeschwerden. Ihr Raum für Entspannung und Heilung in Wien 1080.";
+    "Gezielte Heilmassage bei Verspannungen und Rückenbeschwerden. Spürbare Entlastung in Wien 1080.";
 
 
   return (
