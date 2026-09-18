@@ -157,6 +157,41 @@ export type SanitySportmassagePage = {
   ctaText: string;
 };
 
+export type SanityMobileMassagePage = {
+  heroBadge: string;
+  heroHeading: string;
+  heroSubtitle: string;
+  heroServiceLine: string;
+  heroImage?: { asset: { _ref: string } };
+  priceHeading: string;
+  priceDescription: string;
+  priceTiers: { duration: string; amount?: number }[];
+  priceNote: string;
+  includedHeading: string;
+  includedDescription: string;
+  included: { title: string; description: string }[];
+  forWhomHeading: string;
+  forWhomDescription: string;
+  occasions: string[];
+  processHeading: string;
+  processDescription: string;
+  processSteps: { title: string; description: string }[];
+  vipHeading: string;
+  vipText: string;
+  vipPoints: string[];
+  socialProofEyebrow: string;
+  socialProofHeading: string;
+  socialProofText: string;
+  socialProofImage?: { asset: { _ref: string } };
+  socialProofCaption?: string;
+  areaHeading: string;
+  areaDescription: string;
+  areaDistricts: string[];
+  faqs: { _key: string; question: string; answer: string }[];
+  ctaHeading: string;
+  ctaText: string;
+};
+
 export type SanityKrankenkasse = {
   name: string;
   fullName: string;
@@ -405,6 +440,26 @@ export const getSportmassagePage = cache(async (): Promise<SanitySportmassagePag
     }`
   );
 });
+
+export const getMobileMassagePage = cache(
+  async (): Promise<SanityMobileMassagePage | null> => {
+    return safeFetch<SanityMobileMassagePage>(
+      `*[_type == "mobileMassagePage"][0] {
+        heroBadge, heroHeading, heroSubtitle, heroServiceLine, heroImage,
+        priceHeading, priceDescription, priceTiers[] { duration, amount }, priceNote,
+        includedHeading, includedDescription, included[] { title, description },
+        forWhomHeading, forWhomDescription, occasions,
+        processHeading, processDescription, processSteps[] { title, description },
+        vipHeading, vipText, vipPoints,
+        socialProofEyebrow, socialProofHeading, socialProofText,
+        socialProofImage, socialProofCaption,
+        areaHeading, areaDescription, areaDistricts,
+        faqs[] { _key, question, answer },
+        ctaHeading, ctaText
+      }`,
+    );
+  },
+);
 
 export async function getBuchenPage(): Promise<SanityBuchenPage | null> {
   return safeFetch<SanityBuchenPage>(
