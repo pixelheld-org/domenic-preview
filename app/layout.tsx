@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/JsonLd";
 import Script from "next/script";
 import { SanityLive } from "@/sanity/lib/live";
 import { Navbar } from "@/components/Navbar";
+import { SiteStickyCta } from "@/components/SiteStickyCta";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -99,6 +100,10 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <Navbar initialPathname={initialPathname} />
         {children}
+        <SiteStickyCta
+          phone="+43 670 189 52 56"
+          email="praxis@heilmasseur-domenic.at"
+        />
         <SanityLive />
         <EditKit />
         <PreviewSafety />

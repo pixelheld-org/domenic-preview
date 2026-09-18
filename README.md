@@ -4,7 +4,7 @@ Isolierte Kopie von `josefshamstr/domenic`, Stand in `preview-content/source.jso
 Kein Transfer des Original-Repositories und keine Verbindung zu dessen Deployment.
 
 - Einstieg ausschließlich über das Projekt **Domenic – Testvorschau** im Pixelheld-Portal.
-- Inhalte: `preview-content/site.json` (veröffentlichter Sanity-Snapshot, ohne Gutscheine/Kundendaten).
+- Inhalte: JSX-Copy mit `data-edit-id` in `app/` und `components/`. `preview-content/site.json` ist der Sanity-Rescue-Snapshot (ohne Gutscheine/Kundendaten).
 - Keine echten Buchungen, Zahlungen, E-Mails oder Sanity-Schreibzugriffe.
 - Alle Seiten tragen noindex; Vorschauzugriff erfordert den Sitzungstoken.
 - Keine Live-Zugangsdaten erforderlich. `.env`-Dateien niemals hinzufügen.

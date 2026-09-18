@@ -40,14 +40,24 @@ const VARIANT_DATA = {
     serviceType: "Sportmassage",
     priceRange: "€55–€85",
   },
+  mobilemassage: {
+    name: "Mobile Massage Wien — Hausbesuch",
+    description:
+      "Mobile Massage in Wien: Hausbesuch mit eigener Massageliege, Ölen und Handtüchern. Ab 120 € für 60 Minuten, längere Behandlung gegen Aufpreis, Anfahrt innerhalb Wiens inklusive. Hotel- und VIP-Termine auf Anfrage.",
+    serviceType: "Mobile Massage",
+    priceRange: "ab €120",
+  },
 } as const;
 
 export type JsonLdServiceVariant = keyof typeof VARIANT_DATA;
 
 export function JsonLdService({
   variant = "overview",
+  priceRange,
 }: {
   variant?: JsonLdServiceVariant;
+  /** Überschreibt den Standardpreis, wenn die Seite ihn aus Sanity bezieht. */
+  priceRange?: string;
 }) {
   const data = VARIANT_DATA[variant];
   const schema = {
@@ -56,7 +66,7 @@ export function JsonLdService({
     name: data.name,
     description: data.description,
     serviceType: data.serviceType,
-    priceRange: data.priceRange,
+    priceRange: priceRange ?? data.priceRange,
     areaServed: AREA_SERVED,
     provider: PROVIDER,
   };
