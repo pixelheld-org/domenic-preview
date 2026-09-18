@@ -10,31 +10,20 @@ import {
   type Duration,
   type Size,
 } from "@/lib/blockOptions";
-import type { SanityBlockPricing } from "@/sanity/lib/queries";
 
-export function BlockCardOverview({
-  heading,
-  text,
-  voucherCtaHeading,
-  voucherCtaText,
-  pricing,
-}: {
-  heading: string;
-  text: string;
-  voucherCtaHeading: string;
-  voucherCtaText: string;
-  pricing?: SanityBlockPricing | null;
-}) {
+export function BlockCardOverview() {
   const [duration, setDuration] = useState<Duration>(60);
 
   return (
     <section className="py-16 sm:py-24 bg-white">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-4">
-            {heading}
+          <h2 data-edit-id="preise-block-heading" className="text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-4">
+            Block-Karten — günstiger ab 5 Behandlungen
           </h2>
-          <p className="text-[#555] leading-relaxed">{text}</p>
+          <p data-edit-id="preise-block-text" className="text-[#555] leading-relaxed">
+            Wer regelmäßig kommt, profitiert: Block-Karten gibt es als 5er- oder 10er-Block, wahlweise für 30, 45 oder 60 Minuten. Beim Einlösen entscheiden Sie flexibel, welche Behandlung Sie in Anspruch nehmen möchten.
+          </p>
         </div>
 
         {/* Globaler Dauer-Toggle */}
@@ -75,8 +64,8 @@ export function BlockCardOverview({
         </div>
 
         <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
-          <SizeCard size={5} duration={duration} pricing={pricing} />
-          <SizeCard size={10} duration={duration} pricing={pricing} highlight />
+          <SizeCard size={5} duration={duration} />
+          <SizeCard size={10} duration={duration} highlight />
         </div>
 
         {/* Einzelgutschein-CTA */}
@@ -86,10 +75,12 @@ export function BlockCardOverview({
               <Gift size={32} className="text-[#f2a93b]" />
             </div>
             <div className="flex-1">
-              <h3 className="text-2xl font-extrabold mb-2">
-                {voucherCtaHeading}
+              <h3 data-edit-id="preise-block-voucher-heading" className="text-2xl font-extrabold mb-2">
+                Gutscheine verschenken
               </h3>
-              <p className="text-white/80 leading-relaxed">{voucherCtaText}</p>
+              <p data-edit-id="preise-block-voucher-text" className="text-white/80 leading-relaxed">
+                Gutscheine sind in jedem Wert oder als Block-Karte erhältlich. Drei Jahre gültig, sofort als PDF per E-Mail.
+              </p>
             </div>
             <Link
               href="/gutscheine"
@@ -107,15 +98,13 @@ export function BlockCardOverview({
 function SizeCard({
   size,
   duration,
-  pricing,
   highlight = false,
 }: {
   size: Size;
   duration: Duration;
-  pricing?: SanityBlockPricing | null;
   highlight?: boolean;
 }) {
-  const opt = getBlockOption(size, duration, pricing);
+  const opt = getBlockOption(size, duration);
   const discount = discountPercent(opt.price, opt.fullPrice);
   const savings = opt.fullPrice - opt.price;
   const perSession = Math.round(opt.price / size);
