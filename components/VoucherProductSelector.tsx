@@ -12,8 +12,6 @@ import {
 } from "@/lib/blockOptions";
 import type {
   SanityVoucherProductType,
-  SanityGutscheinePage,
-  SanityBlockPricing,
 } from "@/sanity/lib/queries";
 
 // Gift-friendly preset amounts (€). Partial redemption is supported in the
@@ -41,15 +39,11 @@ export function VoucherProductSelector({
   onSelect,
   customAmount,
   onCustomAmountChange,
-  cms,
-  pricing,
 }: {
   selected: SelectedProduct | null;
   onSelect: (product: SelectedProduct) => void;
   customAmount: number;
   onCustomAmountChange: (value: number) => void;
-  cms?: SanityGutscheinePage | null;
-  pricing?: SanityBlockPricing | null;
 }) {
   // Initial duration: pick up from preselected block if any, else default 60.
   // (In practice the parent skips this step when there is a deep-link preset,
@@ -67,7 +61,6 @@ export function VoucherProductSelector({
       const newOpt = getBlockOption(
         selected.size as Size,
         newDuration,
-        pricing,
       );
       onSelect({
         productType: newOpt.productKey,
@@ -80,7 +73,7 @@ export function VoucherProductSelector({
   }
 
   function selectBlock(size: Size) {
-    const opt = getBlockOption(size, duration, pricing);
+    const opt = getBlockOption(size, duration);
     onSelect({
       productType: opt.productKey,
       kind: "block",
@@ -103,21 +96,20 @@ export function VoucherProductSelector({
       {/* === FÜR SICH SELBST — BLOCK-KARTEN === */}
       <section>
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#0d4f4f]/70 mb-2">
-            {cms?.blocksEyebrow ?? "Für sich selbst — Stammkunden-Vorteil"}
+          <p data-edit-id="gutscheine-blocks-eyebrow" className="text-xs font-bold uppercase tracking-widest text-[#0d4f4f]/70 mb-2">
+            Für sich selbst — Stammkunden-Vorteil
           </p>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-3">
-            {cms?.blocksHeading ?? "Block-Karte kaufen"}
+          <h2 data-edit-id="gutscheine-blocks-heading" className="text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-3">
+            Block-Karte kaufen
           </h2>
-          <p className="text-[#555] leading-relaxed">
-            {cms?.blocksText ??
-              "Bis zu 12 % sparen. Ideal wenn Sie regelmäßig Behandlungen brauchen."}
+          <p data-edit-id="gutscheine-blocks-text" className="text-[#555] leading-relaxed">
+            Bis zu 12 % sparen. Ideal wenn Sie regelmäßig Behandlungen brauchen.
           </p>
         </div>
 
         <div className="flex flex-col items-center mb-8 sm:mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-[#0d4f4f]/70 mb-3">
-            {cms?.blocksDurationLabel ?? "Behandlungsdauer wählen"}
+          <p data-edit-id="gutscheine-blocks-duration" className="text-xs font-bold uppercase tracking-widest text-[#0d4f4f]/70 mb-3">
+            Behandlungsdauer wählen
           </p>
           <div
             role="radiogroup"
@@ -153,7 +145,7 @@ export function VoucherProductSelector({
 
         <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
           {SIZES.map((size) => {
-            const opt = getBlockOption(size, duration, pricing);
+            const opt = getBlockOption(size, duration);
             const isSelected =
               selected?.kind === "block" &&
               selected.productType === opt.productKey;
@@ -162,7 +154,6 @@ export function VoucherProductSelector({
                 key={size}
                 size={size}
                 duration={duration}
-                pricing={pricing}
                 selected={isSelected}
                 highlight={size === 10}
                 onSelect={() => selectBlock(size)}
@@ -190,7 +181,6 @@ export function VoucherProductSelector({
         onCustomAmountChange={onCustomAmountChange}
         selected={selected?.kind === "custom"}
         onSelectCustom={selectCustom}
-        cms={cms}
       />
     </div>
   );
@@ -200,18 +190,16 @@ function BlockSizeCard({
   size,
   duration,
   selected,
-  pricing,
   highlight = false,
   onSelect,
 }: {
   size: Size;
   duration: Duration;
   selected: boolean;
-  pricing?: SanityBlockPricing | null;
   highlight?: boolean;
   onSelect: () => void;
 }) {
-  const opt = getBlockOption(size, duration, pricing);
+  const opt = getBlockOption(size, duration);
   const discount = discountPercent(opt.price, opt.fullPrice);
   const savings = opt.fullPrice - opt.price;
   const perSession = Math.round(opt.price / size);
@@ -277,13 +265,11 @@ function CustomVoucherSection({
   onCustomAmountChange,
   selected,
   onSelectCustom,
-  cms,
 }: {
   customAmount: number;
   onCustomAmountChange: (value: number) => void;
   selected: boolean;
   onSelectCustom: () => void;
-  cms?: SanityGutscheinePage | null;
 }) {
   const validAmount =
     Number.isFinite(customAmount) &&
@@ -293,15 +279,14 @@ function CustomVoucherSection({
   return (
     <section>
       <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-        <p className="text-xs font-bold uppercase tracking-widest text-[#f2a93b] mb-2">
-          {cms?.customEyebrow ?? "Zum Verschenken"}
+        <p data-edit-id="gutscheine-custom-eyebrow" className="text-xs font-bold uppercase tracking-widest text-[#f2a93b] mb-2">
+          Zum Verschenken
         </p>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-3">
-          {cms?.customHeading ?? "Einzelgutschein"}
+        <h2 data-edit-id="gutscheine-custom-heading" className="text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-3">
+          Einzelgutschein
         </h2>
-        <p className="text-[#555] leading-relaxed">
-          {cms?.customText ??
-            "Frei wählbarer Betrag — perfekt für Geburtstag, Weihnachten oder Muttertag. 3 Jahre gültig, Restguthaben bleibt erhalten."}
+        <p data-edit-id="gutscheine-custom-text" className="text-[#555] leading-relaxed">
+          Frei wählbarer Betrag — perfekt für Geburtstag, Weihnachten oder Muttertag. 3 Jahre gültig, Restguthaben bleibt erhalten.
         </p>
       </div>
 
@@ -317,12 +302,12 @@ function CustomVoucherSection({
             <Gift size={24} className="text-[#f2a93b]" aria-hidden={true} />
           </div>
           <div>
-            <p className="text-lg font-extrabold">
-              {cms?.customCardTitle ?? "Beliebiger Geschenk-Betrag"}
+            <p data-edit-id="gutscheine-custom-card-title" className="text-lg font-extrabold">
+              Beliebiger Geschenk-Betrag
             </p>
             <p className="text-sm text-white/70 leading-relaxed">
               €{CUSTOM_MIN} bis €{CUSTOM_MAX} ·{" "}
-              {cms?.customCardSubtext ?? "einlösbar auf jede Behandlung"}
+              <span data-edit-id="gutscheine-custom-card-sub">einlösbar auf jede Behandlung</span>
             </p>
           </div>
         </div>

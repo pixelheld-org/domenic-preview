@@ -2,94 +2,9 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import type { SanityFaqItem } from "@/sanity/lib/queries";
 
-const FALLBACK_FAQS = [
-  {
-    question: "Der erste Schritt zur Heilmassage",
-    answer:
-      "Vor Beginn Ihrer Therapie benötigen Sie eine ärztliche Verordnung von Ihrem Hausarzt oder Facharzt. Bitte bringen Sie diese zur Erstbehandlung mit. Sie erhalten am Ende Ihrer Therapie eine Honorarnote von mir, die Sie gemeinsam mit Ihrer Verordnung bei Ihrer Krankenkasse einreichen können.\n\nGemäß den Tarifbestimmungen Ihrer Krankenkasse erhalten Sie einen Teil Ihrer Therapiekosten zurückerstattet. Sie haben auch die Möglichkeit, einen Teil der Therapiekosten bei einer Zusatzversicherung einzureichen. Privatversicherungen erstatten bis zu 100% der Therapiekosten zurück.",
-  },
-  {
-    question: "Wie beginnt die Therapie?",
-    answer:
-      "In Ihrer ersten Sitzung möchte ich Sie besser kennenlernen, daher beginnen wir mit einem kurzen Kundenfragebogen. Während des Befundungsgesprächs werden wir anschließend die Bereiche besprechen, in denen Sie Schmerzen und/oder Verspannungen verspüren. Bitte halten Sie hierfür alle relevanten Befunde bereit. Dadurch habe ich die Möglichkeit, mit Ihnen die perfekte Therapie zu planen und auf Sie genau abzustimmen.",
-  },
-  {
-    question: "Was passiert während einer Massage?",
-    answer:
-      "Legen/setzen Sie sich in eine bequeme Position. Je nach Beschwerden und Therapie kann diese immer anders aussehen, hierbei berate ich Sie gerne. Währenddessen werden Ihre Arme/Beine/usw. bei Bedarf vorsichtig bewegt. Geben Sie mir gerne Bescheid, wenn Sie in einem bestimmten Bereich mehr oder weniger Druck benötigen.\n\nBitte beachten Sie auch, dass eine Massage in seltenen Fällen zu Schwindelgefühlen führen kann, da Flüssigkeiten im Körper bewegt werden. Nehmen Sie sich daher im Anschluss bitte Zeit, um langsam aufzusitzen. Es wird empfohlen, reichlich Flüssigkeit zu sich zu nehmen.",
-  },
-  {
-    question: "Was brauche ich daheim? (Mobile Massage)",
-    answer:
-      "Ich komme gerne mit meiner persönlichen Massageliege zu Ihnen. Auch nehme ich das Massageöl, ein Laken und Handtücher mit. Sollten Sie Ihre eigenen bevorzugen oder sogar eine Liege besitzen, können Sie mir das gerne vor dem Termin mitteilen. Das einzige worum Sie gebeten werden, ist die Wahl eines Ortes, an dem ich genug Platz habe, um alles aufbauen zu können und in dem Sie voll und ganz zur Ruhe kommen können.",
-  },
-  {
-    question: "Wie oft kann ich einen Termin buchen?",
-    answer:
-      "Jeder Körper ist anders und jede Situation ist anders. Wenn Sie nicht regelmäßig Schmerzen haben, reicht in der Regel eine Massage alle 3\u20134 Wochen für die meisten Kunden aus. Wenn Sie eine Erkrankung haben, die häufiger behandelt werden muss, können wir abgestimmt mit Ihrer Diagnose einen Zeitplan ausarbeiten, der für Sie funktioniert.",
-  },
-  {
-    question: "Welche Kontraindikationen gibt es?",
-    answer:
-      "Bei der Terminvereinbarung informieren Sie mich bitte über mögliche Kontraindikationen: Herz-Kreislauf-Erkrankungen, Diabetes, Infektionen, schwere Verletzungen oder Überdehnungen, Krebs, regelmäßige Einnahme von Medikamenten, offene Wunden.\n\nDa Massage Flüssigkeiten im Körper bewegt, ist es nicht ratsam, einen Heilungsprozess zu unterbrechen. Dies gilt für Krankheit und Entzündung (einschließlich Sonnenbrand). Das erste Trimester der Schwangerschaft ist eine weitere Zeit, in der Sie Ihrem Körper Ruhe gönnen sollten.",
-  },
-  {
-    question: "Was mache ich, wenn ich absagen muss?",
-    answer:
-      "Ich bitte darum, dass Sie Ihren Termin mindestens 24 Stunden im Voraus absagen, um nicht für Ihre Massage berechnet zu werden. Ich verstehe natürlich, dass es Zeiten gibt, in denen dies unvermeidbar ist, und behandle dies individuell. Bitte stornieren Sie telefonisch.",
-  },
-];
-
-type FaqDisplay = { question: string; answer: string };
-
-function FAQItem({
-  faq,
-  isOpen,
-  onToggle,
-}: {
-  faq: FaqDisplay;
-  index: number;
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <div className="border-b border-gray-100 last:border-0">
-      <button
-        onClick={onToggle}
-        className="cursor-pointer flex w-full items-center justify-between gap-4 py-6 text-left"
-        aria-expanded={isOpen}
-      >
-        <span className="text-base sm:text-lg font-bold text-[#111]">
-          {faq.question}
-        </span>
-        <span
-          className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-        >
-          <ChevronDown size={20} className="text-[#0d4f4f]" />
-        </span>
-      </button>
-      {isOpen && (
-        <div className="overflow-hidden">
-          <div className="pb-6 text-[#555] leading-relaxed text-sm sm:text-base whitespace-pre-line">
-            {faq.answer}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function FAQ({
-  sanityFaqs,
-}: {
-  sanityFaqs?: SanityFaqItem[] | null;
-}) {
+export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const faqs: FaqDisplay[] =
-    sanityFaqs && sanityFaqs.length > 0 ? sanityFaqs : FALLBACK_FAQS;
 
   return (
     <section
@@ -100,30 +15,145 @@ export function FAQ({
 
       <div className="relative mx-auto max-w-4xl px-5 sm:px-8">
         <div className="text-center max-w-2xl mx-auto">
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#0d4f4f]/8 px-4 py-1.5 text-sm font-bold text-[#0d4f4f]">
+          <span
+            data-edit-id="home-faq-badge"
+            className="inline-flex items-center gap-2 rounded-full bg-[#0d4f4f]/8 px-4 py-1.5 text-sm font-bold text-[#0d4f4f]"
+          >
             FAQ & Informationen
           </span>
           <h2 className="mt-4 text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.05] tracking-tight text-[#111]">
-            Häufig gestellte{" "}
-            <span className="text-[#0d4f4f]">Fragen</span>
+            <span data-edit-id="home-faq-heading">Häufig gestellte</span>{" "}
+            <span data-edit-id="home-faq-accent" className="text-[#0d4f4f]">
+              Fragen
+            </span>
           </h2>
         </div>
 
         <div className="mt-14 rounded-3xl bg-white border border-gray-100 shadow-xl shadow-black/5 px-6 sm:px-10">
-          {faqs.map((faq, i) => (
-            <FAQItem
-              key={i}
-              faq={faq}
-              index={i}
-              isOpen={openIndex === i}
-              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
-            />
-          ))}
+          <div className="border-b border-gray-100 last:border-0">
+            <button
+              onClick={() => setOpenIndex(openIndex === 0 ? null : 0)}
+              className="cursor-pointer flex w-full items-center justify-between gap-4 py-6 text-left"
+              aria-expanded={openIndex === 0}
+            >
+              <span data-edit-id="home-faq-1-question" className="text-base sm:text-lg font-bold text-[#111]">
+                Wird die Behandlung von der Krankenkasse bezahlt?
+              </span>
+              <span className={`shrink-0 transition-transform duration-200 ${openIndex === 0 ? "rotate-180" : ""}`}>
+                <ChevronDown size={20} className="text-[#0d4f4f]" />
+              </span>
+            </button>
+            {openIndex === 0 && (
+              <p data-edit-id="home-faq-1-answer" className="pb-6 text-[#555] leading-relaxed text-sm sm:text-base whitespace-pre-line">
+                {"Mit einer ärztlichen Verordnung ist je nach Krankenkasse eine teilweise Rückerstattung möglich. Die Honorarnote können Sie nach der Behandlung bei Ihrer Kasse einreichen.\nPrivate Zusatzversicherungen übernehmen je nach Tarif oft einen Großteil der Kosten, teilweise bis zu 100 %."}
+              </p>
+            )}
+          </div>
+
+          <div className="border-b border-gray-100 last:border-0">
+            <button
+              onClick={() => setOpenIndex(openIndex === 1 ? null : 1)}
+              className="cursor-pointer flex w-full items-center justify-between gap-4 py-6 text-left"
+              aria-expanded={openIndex === 1}
+            >
+              <span data-edit-id="home-faq-2-question" className="text-base sm:text-lg font-bold text-[#111]">
+                Wie läuft die Behandlung ab?
+              </span>
+              <span className={`shrink-0 transition-transform duration-200 ${openIndex === 1 ? "rotate-180" : ""}`}>
+                <ChevronDown size={20} className="text-[#0d4f4f]" />
+              </span>
+            </button>
+            {openIndex === 1 && (
+              <p data-edit-id="home-faq-2-answer" className="pb-6 text-[#555] leading-relaxed text-sm sm:text-base">
+                Zu Beginn besprechen wir kurz Ihre Beschwerden und Ziele. Die Behandlung wird individuell auf Ihre Bedürfnisse abgestimmt. Während der Massage können Sie sich entspannen, während gezielt an Verspannungen gearbeitet wird.
+              </p>
+            )}
+          </div>
+
+          <div className="border-b border-gray-100 last:border-0">
+            <button
+              onClick={() => setOpenIndex(openIndex === 2 ? null : 2)}
+              className="cursor-pointer flex w-full items-center justify-between gap-4 py-6 text-left"
+              aria-expanded={openIndex === 2}
+            >
+              <span data-edit-id="home-faq-3-question" className="text-base sm:text-lg font-bold text-[#111]">
+                Brauche ich eine ärztliche Verordnung?
+              </span>
+              <span className={`shrink-0 transition-transform duration-200 ${openIndex === 2 ? "rotate-180" : ""}`}>
+                <ChevronDown size={20} className="text-[#0d4f4f]" />
+              </span>
+            </button>
+            {openIndex === 2 && (
+              <p data-edit-id="home-faq-3-answer" className="pb-6 text-[#555] leading-relaxed text-sm sm:text-base whitespace-pre-line">
+                {"Für eine Heilmassage ist eine ärztliche Verordnung erforderlich.\nMit Verordnung ist je nach Krankenkasse eine teilweise Rückerstattung möglich.\nSie können aber auch ohne Verordnung einen Termin buchen."}
+              </p>
+            )}
+          </div>
+
+          <div className="border-b border-gray-100 last:border-0">
+            <button
+              onClick={() => setOpenIndex(openIndex === 3 ? null : 3)}
+              className="cursor-pointer flex w-full items-center justify-between gap-4 py-6 text-left"
+              aria-expanded={openIndex === 3}
+            >
+              <span data-edit-id="home-faq-4-question" className="text-base sm:text-lg font-bold text-[#111]">
+                Wie oft sollte ich zur Massage kommen?
+              </span>
+              <span className={`shrink-0 transition-transform duration-200 ${openIndex === 3 ? "rotate-180" : ""}`}>
+                <ChevronDown size={20} className="text-[#0d4f4f]" />
+              </span>
+            </button>
+            {openIndex === 3 && (
+              <p data-edit-id="home-faq-4-answer" className="pb-6 text-[#555] leading-relaxed text-sm sm:text-base whitespace-pre-line">
+                {"Das hängt von Ihren Beschwerden und Zielen ab.\nBei akuten Verspannungen sind mehrere Behandlungen in kürzeren Abständen sinnvoll, z. B. einmal pro Woche.\nFür allgemeines Wohlbefinden und Prävention reicht meist ein Termin alle 2–4 Wochen."}
+              </p>
+            )}
+          </div>
+
+          <div className="border-b border-gray-100 last:border-0">
+            <button
+              onClick={() => setOpenIndex(openIndex === 4 ? null : 4)}
+              className="cursor-pointer flex w-full items-center justify-between gap-4 py-6 text-left"
+              aria-expanded={openIndex === 4}
+            >
+              <span data-edit-id="home-faq-5-question" className="text-base sm:text-lg font-bold text-[#111]">
+                Welche Kontraindikationen gibt es?
+              </span>
+              <span className={`shrink-0 transition-transform duration-200 ${openIndex === 4 ? "rotate-180" : ""}`}>
+                <ChevronDown size={20} className="text-[#0d4f4f]" />
+              </span>
+            </button>
+            {openIndex === 4 && (
+              <p data-edit-id="home-faq-5-answer" className="pb-6 text-[#555] leading-relaxed text-sm sm:text-base">
+                Bei akuten Entzündungen, Fieber, Infektionskrankheiten, Thrombosen oder bestimmten Hauterkrankungen sollte keine Massage durchgeführt werden. Im Zweifelsfall konsultieren Sie bitte Ihren Arzt.
+              </p>
+            )}
+          </div>
+
+          <div className="border-b border-gray-100 last:border-0">
+            <button
+              onClick={() => setOpenIndex(openIndex === 5 ? null : 5)}
+              className="cursor-pointer flex w-full items-center justify-between gap-4 py-6 text-left"
+              aria-expanded={openIndex === 5}
+            >
+              <span data-edit-id="home-faq-6-question" className="text-base sm:text-lg font-bold text-[#111]">
+                Was mache ich, wenn ich absagen muss?
+              </span>
+              <span className={`shrink-0 transition-transform duration-200 ${openIndex === 5 ? "rotate-180" : ""}`}>
+                <ChevronDown size={20} className="text-[#0d4f4f]" />
+              </span>
+            </button>
+            {openIndex === 5 && (
+              <p data-edit-id="home-faq-6-answer" className="pb-6 text-[#555] leading-relaxed text-sm sm:text-base">
+                Bitte sagen Sie Ihren Termin mindestens 24 Stunden vorher ab. Bei kurzfristigen Absagen kann ein Ausfallhonorar anfallen. Kontaktieren Sie mich einfach per Telefon oder E-Mail.
+              </p>
+            )}
+          </div>
         </div>
 
         <p className="mt-6 text-center text-sm text-[#555]">
           Bitte beachten Sie unsere{" "}
-          <a href="/agb" className="font-bold text-[#0d4f4f] hover:underline">
+          <a data-edit-id="home-faq-agb-link" href="/agb" className="font-bold text-[#0d4f4f] hover:underline">
             Allgemeinen Geschäftsbedingungen
           </a>{" "}
           vor der Buchung eines Termins.

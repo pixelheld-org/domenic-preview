@@ -2,28 +2,16 @@
 
 import { ArrowDown, Star } from "lucide-react";
 import Image from "next/image";
-import type { SanitySettings } from "@/sanity/lib/queries";
 import type { ReviewSummary } from "@/components/GoogleReviewsBadge";
 
 const GOOGLE_MAPS_URL =
   "https://maps.google.com/?q=Heilmasseur+Domenic+Hacker+Wien";
 
 export function Hero({
-  sanitySettings,
   reviewSummary,
-  heroBackgroundImageUrl,
 }: {
-  sanitySettings?: SanitySettings | null;
   reviewSummary?: ReviewSummary;
-  heroBackgroundImageUrl?: string;
 }) {
-  const headline = sanitySettings?.heroHeadline ?? "Weniger Schmerzen.";
-  const headlineAccent = sanitySettings?.heroHeadlineAccent ?? "Tiefe Entspannung.";
-  const subheading =
-    sanitySettings?.heroSubheading ??
-    "Gezielte Heilmassage bei Verspannungen, Stress und Rückenbeschwerden. Ihr Raum für Entspannung und Heilung in Wien 1080.";
-
-
   return (
     <section
       className="relative min-h-screen flex items-center"
@@ -32,7 +20,7 @@ export function Hero({
       {/* Parallax background — position:fixed inside clip-path for mobile compatibility */}
       <div className="fixed inset-x-0 top-0 h-[100lvh]" style={{ zIndex: 0 }}>
         <Image
-          src={heroBackgroundImageUrl ?? "/images/domenic-1080.webp"}
+          src="/images/domenic-1080.webp"
           alt=""
           fill
           priority
@@ -53,14 +41,16 @@ export function Hero({
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-2 text-sm font-semibold text-white/90">
               <span className="h-2 w-2 rounded-full bg-[#f2a93b] animate-pulse" />
-              Diplomierter Heilmasseur in Wien
+              <span data-edit-id="home-hero-badge">Diplomierter Heilmasseur in Wien</span>
             </span>
           </div>
 
           <h1 className="mt-6 sm:mt-8 text-[clamp(2.5rem,6vw,5rem)] font-extrabold leading-[0.95] tracking-tight text-white">
-            {headline}
+            <span data-edit-id="home-hero-headline">Weniger Schmerzen.</span>
             <br />
-            <span className="text-[#f2a93b]">{headlineAccent}</span>
+            <span data-edit-id="home-hero-accent" className="text-[#f2a93b]">
+              Tiefe Entspannung.
+            </span>
           </h1>
 
           {reviewSummary && (
@@ -82,6 +72,10 @@ export function Hero({
                       <img
                         src={a.photoUri}
                         alt=""
+                        width={36}
+                        height={36}
+                        loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 h-full w-full object-cover"
                         referrerPolicy="no-referrer"
                       />
@@ -109,22 +103,25 @@ export function Hero({
             </a>
           )}
 
-          <p className="mt-5 max-w-lg text-lg sm:text-xl text-white/75 leading-relaxed">
-            {subheading}
+          <p
+            data-edit-id="home-hero-subheading"
+            className="mt-5 max-w-lg text-lg sm:text-xl text-white/75 leading-relaxed"
+          >
+            Gezielte Heilmassage bei Verspannungen, Stress und Rückenbeschwerden. Ihr Raum für spürbare Entlastung und nachhaltige Entspannung in Wien 1080.
           </p>
 
-          <div className="mt-8 sm:mt-10 flex flex-wrap gap-4">
+          <div id="hero-cta" className="mt-8 sm:mt-10 flex flex-wrap gap-4">
             <a
               href="/buchen"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#e8654a] to-[#f2a93b] px-7 py-3.5 text-base font-bold text-white shadow-xl shadow-[#e8654a]/30 transition-all duration-300 hover:shadow-2xl hover:shadow-[#e8654a]/40 hover:scale-105"
             >
-              Jetzt Termin sichern
+              <span data-edit-id="home-hero-cta-book">Jetzt Termin sichern</span>
             </a>
             <a
               href="#leistungen"
               className="inline-flex items-center gap-2 rounded-full border-2 border-white/25 px-7 py-3.5 text-base font-bold text-white transition-all duration-200 hover:bg-white/10 hover:border-white/40"
             >
-              Zum Angebot
+              <span data-edit-id="home-hero-cta-offer">Zum Angebot</span>
               <ArrowDown size={18} />
             </a>
           </div>

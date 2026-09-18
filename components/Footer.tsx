@@ -3,28 +3,10 @@
 import { Heart, Instagram } from "lucide-react";
 import Image from "next/image";
 import * as CookieConsent from "vanilla-cookieconsent";
-import type { SanitySettings } from "@/sanity/lib/queries";
 
-const angebotLinks = [
-  { label: "Heilmassage Wien", href: "/heilmassage-wien-1080" },
-  { label: "Sportmassage Wien", href: "/sportmassage-wien" },
-  { label: "Preise", href: "/preise" },
-  { label: "Gutscheine", href: "/gutscheine" },
-];
-
-const praxisLinks = [
-  { label: "Startseite", href: "/" },
-  { label: "Über mich", href: "/ueber-mich" },
-  { label: "Termin buchen", href: "/buchen" },
-  { label: "Impressum", href: "/impressum" },
-  { label: "Datenschutz", href: "/datenschutz" },
-  { label: "AGB", href: "/agb" },
-];
-
-export function Footer({ sanitySettings }: { sanitySettings?: SanitySettings | null }) {
-  const instagramUrl = sanitySettings?.instagramUrl || "https://www.instagram.com/heilmasseurdomenic";
+export function Footer() {
   return (
-    <footer className="relative bg-[#0a0a0a] pt-16 pb-8">
+    <footer id="site-footer" className="relative bg-[#0a0a0a] pt-16 pb-8">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -39,16 +21,15 @@ export function Footer({ sanitySettings }: { sanitySettings?: SanitySettings | n
                 height={36}
                 className="h-9 w-auto brightness-0 invert"
               />
-              <span className="font-extrabold text-lg text-white tracking-tight">
+              <span data-edit-id="footer-brand-name" className="font-extrabold text-lg text-white tracking-tight">
                 Domenic Hacker
               </span>
             </div>
-            <p className="mt-3 text-sm text-white/60 leading-relaxed">
-              Diplomierter Heilmasseur in Wien 1080. Heilmassage,
-              Lymphdrainage & Klassische Massage. Feldgasse 3/20, 1080 Wien.
+            <p data-edit-id="footer-brand-blurb" className="mt-3 text-sm text-white/60 leading-relaxed">
+              Diplomierter Heilmasseur in Wien 1080. Heilmassage, Lymphdrainage & Klassische Massage. Feldgasse 3/20, 1080 Wien.
             </p>
             <a
-              href={instagramUrl}
+              href="https://www.instagram.com/heilmasseurdomenic"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200"
@@ -62,37 +43,52 @@ export function Footer({ sanitySettings }: { sanitySettings?: SanitySettings | n
           <div className="flex flex-col sm:flex-row gap-10 sm:gap-16">
             {/* Angebot column */}
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">
+              <p data-edit-id="footer-col-angebot" className="text-xs font-bold uppercase tracking-widest text-white/70 mb-4">
                 Angebot
               </p>
               <nav className="flex flex-col gap-2.5">
-                {angebotLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                <a href="/heilmassage-wien-1080" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-heilmassage">Heilmassage Wien</span>
+                </a>
+                <a href="/sportmassage-wien" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-sportmassage">Sportmassage Wien</span>
+                </a>
+                <a href="/mobile-massage-wien" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-mobile">Mobile Massage Wien</span>
+                </a>
+                <a href="/preise" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-preise">Preise</span>
+                </a>
+                <a href="/gutscheine" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-gutscheine">Gutscheine</span>
+                </a>
               </nav>
             </div>
 
             {/* Praxis column */}
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">
+              <p data-edit-id="footer-col-praxis" className="text-xs font-bold uppercase tracking-widest text-white/70 mb-4">
                 Praxis
               </p>
               <nav className="flex flex-col gap-2.5">
-                {praxisLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                <a href="/" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-home">Startseite</span>
+                </a>
+                <a href="/ueber-mich" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-about">Über mich</span>
+                </a>
+                <a href="/buchen" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-buchen">Termin buchen</span>
+                </a>
+                <a href="/impressum" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-impressum">Impressum</span>
+                </a>
+                <a href="/datenschutz" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-datenschutz">Datenschutz</span>
+                </a>
+                <a href="/agb" className="text-sm font-semibold text-white/60 hover:text-white transition-colors duration-200">
+                  <span data-edit-id="footer-link-agb">AGB</span>
+                </a>
               </nav>
               <button
                 type="button"

@@ -53,3 +53,9 @@ section[id] {
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+/* Hero-Einstieg /mobile-massage-wien: einmaliger Fade-Rise, nur bei motion-safe */
+@keyframes mm-rise {
+  from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}

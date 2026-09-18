@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { getDatenschutzPage } from "@/sanity/lib/queries";
 
 export const metadata: Metadata = {
   title: "Datenschutzerklärung | Heilmasseur Domenic Hacker",
@@ -12,48 +11,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = "09.04.2026";
-
-function renderContent(content: string) {
-  const lines = content.split("\n");
-  const elements: React.ReactNode[] = [];
-  let bulletBuffer: string[] = [];
-
-  const flushBullets = () => {
-    if (bulletBuffer.length > 0) {
-      elements.push(
-        <ul key={`ul-${elements.length}`} className="list-disc pl-6 mt-2">
-          {bulletBuffer.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-      );
-      bulletBuffer = [];
-    }
-  };
-
-  lines.forEach((line, i) => {
-    if (line.startsWith("• ")) {
-      bulletBuffer.push(line.slice(2));
-    } else {
-      flushBullets();
-      elements.push(
-        <span key={`line-${i}`}>
-          {line}
-          {i < lines.length - 1 && <br />}
-        </span>
-      );
-    }
-  });
-  flushBullets();
-
-  return elements;
-}
-
-export default async function Datenschutz() {
-  const datenschutz = await getDatenschutzPage();
-  const lastUpdated = datenschutz?.lastUpdated ?? LAST_UPDATED;
-
+export default function Datenschutz() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-3xl px-5 sm:px-8 py-16 sm:py-24">
@@ -65,31 +23,11 @@ export default async function Datenschutz() {
           Zurück zur Startseite
         </Link>
 
-        <h1 className="text-4xl font-extrabold text-[#111] mb-8">
+        <h1 data-edit-id="datenschutz-title" className="text-4xl font-extrabold text-[#111] mb-8">
           Datenschutzerklärung
         </h1>
 
         <div className="prose prose-gray max-w-none space-y-6 text-[#333] leading-relaxed">
-          {datenschutz?.sections ? (
-            datenschutz.sections.map((section, index) => (
-              <section key={index}>
-                <h2 className="text-xl font-bold text-[#111] mt-8 mb-3">
-                  {section.heading}
-                </h2>
-                <p>{renderContent(section.content)}</p>
-
-                {section.subsections?.map((sub, subIndex) => (
-                  <div key={subIndex}>
-                    <h3 className="text-lg font-semibold text-[#111] mt-6 mb-2">
-                      {sub.heading}
-                    </h3>
-                    <p>{renderContent(sub.content)}</p>
-                  </div>
-                ))}
-              </section>
-            ))
-          ) : (
-            <>
           <section>
             <h2 className="text-xl font-bold text-[#111] mt-8 mb-3">
               1. Verantwortlicher
@@ -361,14 +299,12 @@ export default async function Datenschutz() {
               8. Aktualität und Änderungen
             </h2>
             <p>
-              Diese Datenschutzerklärung wurde zuletzt am {lastUpdated}{" "}
+              Diese Datenschutzerklärung wurde zuletzt am 09.04.2026
               aktualisiert. Wir behalten uns vor, diese Datenschutzerklärung
               anzupassen, damit sie stets den aktuellen rechtlichen
               Anforderungen entspricht.
             </p>
           </section>
-          </>
-          )}
         </div>
       </div>
     </div>

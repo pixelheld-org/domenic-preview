@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Footer } from "@/components/Footer";
-import { getSettings } from "@/sanity/lib/queries";
 
 export const metadata: Metadata = {
   title: "AGB | Heilmasseur Domenic Hacker",
@@ -13,8 +12,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Agb() {
-  const settings = await getSettings();
+export default function Agb() {
 
   return (
     <div className="min-h-screen bg-white">
@@ -319,7 +317,7 @@ export default async function Agb() {
           </section>
         </div>
       </div>
-      <Footer sanitySettings={settings} />
+      <Footer />
     </div>
   );
 }

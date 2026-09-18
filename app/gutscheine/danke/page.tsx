@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Mail, Download } from "lucide-react";
 import { Footer } from "@/components/Footer";
-import { getVoucherByStripeSession, getSettings } from "@/sanity/lib/queries";
+import { getVoucherByStripeSession } from "@/sanity/lib/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +25,6 @@ export default async function DankePage({
   if (!sessionId) {
     redirect("/gutscheine");
   }
-
-  const settings = await getSettings();
 
   // Polling: 1 immediate + up to 4 retries × 2s = max ~8s wait for webhook
   let voucher = await getVoucherByStripeSession(sessionId);
@@ -101,7 +99,7 @@ export default async function DankePage({
           </div>
         </section>
       </main>
-      <Footer sanitySettings={settings} />
+      <Footer />
     </>
   );
 }

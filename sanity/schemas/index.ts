@@ -8,6 +8,7 @@ import { settingsSchema } from "./settings";
 import { homePageSchema } from "./homePage";
 import { heilmassagePageSchema } from "./heilmassagePage";
 import { sportmassagePageSchema } from "./sportmassagePage";
+import { mobileMassagePageSchema } from "./mobileMassagePage";
 import { buchenPageSchema } from "./buchenPage";
 import { impressumPageSchema } from "./impressumPage";
 import { datenschutzPageSchema } from "./datenschutzPage";
@@ -20,6 +21,7 @@ export const schemaTypes = [
   homePageSchema,
   heilmassagePageSchema,
   sportmassagePageSchema,
+  mobileMassagePageSchema,
   pricingPageSchema,
   gutscheinePageSchema,
   blockPricingSchema,

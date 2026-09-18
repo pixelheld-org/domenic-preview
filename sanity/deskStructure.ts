@@ -56,10 +56,11 @@ export const deskStructure = (S: StructureBuilder) =>
 
       S.divider(),
 
-      // ── Seiten ────────────────────────────────────────────
+      // ── Seiten ──────────────────────────────────────
       singleton(S, "Startseite", "homePage", "homePage"),
       singleton(S, "Heilmassage Wien", "heilmassagePage", "heilmassagePage"),
       singleton(S, "Sportmassage Wien", "sportmassagePage", "sportmassagePage"),
+      singleton(S, "Mobile Massage Wien", "mobileMassagePage", "mobileMassagePage"),
       singleton(S, "Preise (Seite)", "pricingPage", "pricingPage"),
       singleton(S, "Gutscheine (Seite)", "gutscheinePage", "gutscheinePage"),
       singleton(S, "Block-Karten Preise", "blockPricing", "blockPricing"),
@@ -70,7 +71,7 @@ export const deskStructure = (S: StructureBuilder) =>
 
       S.divider(),
 
-      // ── Inhalte (Listen) ──────────────────────────────────
+      // ── Inhalte (Listen) ──────────────────────────────
       S.listItem()
         .title("Leistungen")
         .schemaType("service")
