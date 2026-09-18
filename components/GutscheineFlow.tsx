@@ -11,21 +11,16 @@ import {
   type CheckoutFormInput,
 } from "@/components/VoucherCheckout";
 import { getBlockOption, type BlockProductKey } from "@/lib/blockOptions";
-import type {
-  SanityGutscheinePage,
-  SanityBlockPricing,
-} from "@/sanity/lib/queries";
 
 function deriveInitialSelected(
   productPreset: string | null,
-  pricing: SanityBlockPricing | null,
 ): SelectedProduct | null {
   if (!productPreset) return null;
   const blockMatch = /^block_(5|10)_(30|45|60)$/.exec(productPreset);
   if (blockMatch) {
     const size = Number(blockMatch[1]) as 5 | 10;
     const duration = Number(blockMatch[2]) as 30 | 45 | 60;
-    const opt = getBlockOption(size, duration, pricing);
+    const opt = getBlockOption(size, duration);
     return {
       productType: opt.productKey as BlockProductKey,
       kind: "block",
@@ -37,25 +32,19 @@ function deriveInitialSelected(
   return null;
 }
 
-function GutscheineContent({
-  cms,
-  pricing,
-}: {
-  cms: SanityGutscheinePage | null;
-  pricing: SanityBlockPricing | null;
-}) {
+function GutscheineContent() {
   const searchParams = useSearchParams();
   const productPreset = searchParams.get("product");
 
   const [selected, setSelected] = useState<SelectedProduct | null>(() =>
-    deriveInitialSelected(productPreset, pricing),
+    deriveInitialSelected(productPreset),
   );
   const [customAmount, setCustomAmount] = useState<number>(50);
   const [buyerEmail, setBuyerEmail] = useState("");
   const [buyerName, setBuyerName] = useState("");
   const [recipientName, setRecipientName] = useState("");
   const [step, setStep] = useState<"select" | "details" | "pay">(() =>
-    deriveInitialSelected(productPreset, pricing) ? "details" : "select",
+    deriveInitialSelected(productPreset) ? "details" : "select",
   );
 
   // Bei Step-Wechsel zum Heading des neuen Steps scrollen (unter der
@@ -88,18 +77,17 @@ function GutscheineContent({
     <>
       <section className="bg-white">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 pt-28 pb-16 sm:pt-36 sm:pb-24">
-          <span className="inline-flex items-center gap-2 rounded-full bg-[#e8654a]/10 px-4 py-1.5 text-sm font-bold text-[#e8654a]">
-            {cms?.heroBadge ?? "Geschenke, die wirklich gut tun"}
+          <span data-edit-id="gutscheine-hero-badge" className="inline-flex items-center gap-2 rounded-full bg-[#e8654a]/10 px-4 py-1.5 text-sm font-bold text-[#e8654a]">
+            Geschenke, die wirklich gut tun
           </span>
           <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-[#111]">
-            {cms?.heroHeading ?? "Massage-Gutscheine"}{" "}
-            <span className="text-[#e8654a]">
-              {cms?.heroHeadingAccent ?? "aus Wien 1080"}
+            <span data-edit-id="gutscheine-hero-heading">Massage-Gutscheine</span>{" "}
+            <span data-edit-id="gutscheine-hero-accent" className="text-[#e8654a]">
+              aus Wien 1080
             </span>
           </h1>
-          <p className="mt-6 text-lg text-[#555] leading-relaxed max-w-2xl">
-            {cms?.heroText ??
-              "Gutscheine sind sofort als PDF verfügbar — drei Jahre gültig, einlösbar gegen jede Behandlung. Block-Karten geben extra Vorteil ab fünf Behandlungen."}
+          <p data-edit-id="gutscheine-hero-text" className="mt-6 text-lg text-[#555] leading-relaxed max-w-2xl">
+            Gutscheine sind sofort als PDF verfügbar — drei Jahre gültig, einlösbar gegen jede Behandlung. Block-Karten geben extra Vorteil ab fünf Behandlungen.
           </p>
         </div>
       </section>
@@ -115,8 +103,6 @@ function GutscheineContent({
               }}
               customAmount={customAmount}
               onCustomAmountChange={setCustomAmount}
-              cms={cms}
-              pricing={pricing}
             />
           </div>
         </section>
@@ -129,11 +115,10 @@ function GutscheineContent({
               id="step-details-heading"
               className="scroll-mt-20 sm:scroll-mt-24 text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-2"
             >
-              {cms?.detailsHeading ?? "Ihre Daten"}
+              <span data-edit-id="gutscheine-details-heading">Ihre Daten</span>
             </h2>
-            <p className="text-[#555] mb-8 leading-relaxed">
-              {cms?.detailsText ??
-                "Wir senden Ihnen den Gutschein als PDF an die angegebene E-Mail-Adresse."}
+            <p data-edit-id="gutscheine-details-text" className="text-[#555] mb-8 leading-relaxed">
+              Wir senden Ihnen den Gutschein als PDF an die angegebene E-Mail-Adresse.
             </p>
             <div className="space-y-5">
               <label className="block">
@@ -173,9 +158,8 @@ function GutscheineContent({
                   className="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0d4f4f]"
                   placeholder="z.B. Maria"
                 />
-                <p className="mt-1 text-xs text-[#666]">
-                  {cms?.recipientHelpText ??
-                    "Der Name erscheint auf dem PDF-Gutschein. Ohne Angabe ist der Gutschein neutral."}
+                <p data-edit-id="gutscheine-recipient-help" className="mt-1 text-xs text-[#666]">
+                  Der Name erscheint auf dem PDF-Gutschein. Ohne Angabe ist der Gutschein neutral.
                 </p>
               </label>
             </div>
@@ -214,25 +198,14 @@ function GutscheineContent({
               id="step-pay-heading"
               className="scroll-mt-20 sm:scroll-mt-24 text-2xl sm:text-3xl font-extrabold text-[#0d4f4f] mb-2"
             >
-              {cms?.paymentHeading ?? "Zahlung"}
+              <span data-edit-id="gutscheine-pay-heading">Zahlung</span>
             </h2>
-            <p className="text-[#555] mb-8 leading-relaxed">
-              {cms?.paymentText ??
-                "Sicher bezahlen via Stripe — Karten, Apple Pay, Google Pay, SEPA."}
+            <p data-edit-id="gutscheine-pay-text" className="text-[#555] mb-8 leading-relaxed">
+              Sicher bezahlen via Stripe — Karten, Apple Pay, Google Pay, SEPA.
             </p>
             <VoucherCheckout input={checkoutInput} />
-            <p className="mt-6 text-xs text-[#666]">
-              {cms?.agbNotice ?? (
-                <>
-                  Mit dem Klick auf Bezahlen bestätigen Sie unsere{" "}
-                  <a href="/agb" className="font-semibold text-[#0d4f4f] hover:underline">
-                    AGB
-                  </a>{" "}
-                  und das Widerrufsrecht. Hinweis: Bei digitalen Inhalten
-                  (PDF-Gutschein) erlischt das Widerrufsrecht nach Lieferung des
-                  PDFs an die angegebene E-Mail-Adresse (§ 18 FAGG).
-                </>
-              )}
+            <p data-edit-id="gutscheine-agb-notice" className="mt-6 text-xs text-[#666]">
+              Mit dem Klick auf Bezahlen bestätigen Sie unsere AGB und das Widerrufsrecht. Hinweis: Bei digitalen Inhalten (PDF-Gutschein) erlischt das Widerrufsrecht nach Lieferung des PDFs an die angegebene E-Mail-Adresse (§ 18 FAGG).
             </p>
           </div>
         </section>
@@ -241,16 +214,10 @@ function GutscheineContent({
   );
 }
 
-export function GutscheineFlow({
-  cms,
-  pricing,
-}: {
-  cms: SanityGutscheinePage | null;
-  pricing: SanityBlockPricing | null;
-}) {
+export function GutscheineFlow() {
   return (
     <Suspense fallback={<div className="min-h-screen" />}>
-      <GutscheineContent cms={cms} pricing={pricing} />
+      <GutscheineContent />
     </Suspense>
   );
 }
