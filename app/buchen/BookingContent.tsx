@@ -209,8 +209,7 @@ export function BookingContent() {
                   <CheckCircle size={16} className="text-[#0d4f4f]" />
                   <span data-edit-id="buchen-access-2">Parkplätze in der Nähe</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-[#555]
-">
+                <div className="flex items-center gap-2 text-sm text-[#555]">
                   <CheckCircle size={16} className="text-[#0d4f4f]" />
                   <span data-edit-id="buchen-access-3">U-Bahn Rathaus (U2) in 5 Min.</span>
                 </div>
