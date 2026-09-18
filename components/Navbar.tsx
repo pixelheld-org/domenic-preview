@@ -5,33 +5,6 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Check, ChevronDown, Calendar } from "lucide-react";
 import Image from "next/image";
 
-type NavLink = { kind: "link"; label: string; href: string };
-type NavDropdown = {
-  kind: "dropdown";
-  label: string;
-  items: { label: string; href: string }[];
-};
-type NavItem = NavLink | NavDropdown;
-
-// NOTE: Only one dropdown is currently supported because state and refs
-// (desktopDropdownOpen, dropdownRef, closeTimeoutRef) are scalar.
-// To add a second dropdown, refactor to per-item state (e.g. Map<label, boolean>)
-// or extract a Dropdown sub-component with its own state.
-const navItems: NavItem[] = [
-  { kind: "link", label: "Startseite", href: "/" },
-  {
-    kind: "dropdown",
-    label: "Leistungen",
-    items: [
-      { label: "Heilmassage", href: "/heilmassage-wien-1080" },
-      { label: "Sportmassage", href: "/sportmassage-wien" },
-    ],
-  },
-  { kind: "link", label: "Preise", href: "/preise" },
-  { kind: "link", label: "Gutscheine", href: "/gutscheine" },
-  { kind: "link", label: "Über mich", href: "/ueber-mich" },
-];
-
 // Pages that render a DARK hero behind the navbar at the top of the page.
 // On these pages the navbar starts transparent with WHITE text (overlay style).
 // All other pages (white/light heros) get DARK text from the start so the
@@ -42,6 +15,7 @@ const DARK_HERO_PATHS = new Set<string>([
   "/ueber-mich",
   "/heilmassage-wien-1080",
   "/sportmassage-wien",
+  "/mobile-massage-wien",
   "/buchen",
 ]);
 
@@ -135,9 +109,6 @@ export function Navbar({ initialPathname = "" }: { initialPathname?: string }) {
     return pathname === href;
   }
 
-  function isActiveDropdown(item: NavDropdown): boolean {
-    return item.items.some((sub) => pathname === sub.href);
-  }
 
   const getLinkClass = (active: boolean) => {
     if (useDarkText) {
@@ -177,6 +148,7 @@ export function Navbar({ initialPathname = "" }: { initialPathname?: string }) {
                 className="h-9 w-auto"
               />
               <span
+                data-edit-id="nav-brand"
                 className={`font-extrabold text-lg tracking-tight transition-colors duration-300 ${
                   useDarkText ? "text-[#111]" : "text-white"
                 }`}
@@ -187,76 +159,62 @@ export function Navbar({ initialPathname = "" }: { initialPathname?: string }) {
 
             {/* Desktop links */}
             <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => {
-                if (item.kind === "link") {
-                  const active = isActiveLink(item.href);
-                  return (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${getLinkClass(active)}`}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                }
-                // dropdown
-                const active = isActiveDropdown(item);
-                return (
+              <a href="/" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${getLinkClass(isActiveLink("/"))}`}>
+                <span data-edit-id="nav-desktop-home">Startseite</span>
+              </a>
+              <div
+                ref={dropdownRef}
+                className="relative"
+                onMouseEnter={openDropdown}
+                onMouseLeave={scheduleCloseDropdown}
+              >
+                <button
+                  type="button"
+                  onClick={() => setDesktopDropdownOpen((o) => !o)}
+                  aria-haspopup="true"
+                  aria-expanded={desktopDropdownOpen}
+                  className={`cursor-pointer inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${getLinkClass(["/heilmassage-wien-1080","/sportmassage-wien","/mobile-massage-wien"].includes(pathname))}`}
+                >
+                  <span data-edit-id="nav-desktop-leistungen">Leistungen</span>
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={2.5}
+                    className={`transition-transform duration-200 ${
+                      desktopDropdownOpen ? "rotate-180" : ""
+                    }`}
+                    aria-hidden={true}
+                  />
+                </button>
+                {desktopDropdownOpen && (
                   <div
-                    key={item.label}
-                    ref={dropdownRef}
-                    className="relative"
-                    onMouseEnter={openDropdown}
-                    onMouseLeave={scheduleCloseDropdown}
+                    aria-label="Leistungen Untermenü"
+                    className="absolute left-0 top-full mt-2 min-w-[220px] rounded-2xl bg-white/95 backdrop-blur-md shadow-lg shadow-black/10 border border-gray-100 overflow-hidden"
                   >
-                    <button
-                      type="button"
-                      onClick={() => setDesktopDropdownOpen((o) => !o)}
-                      aria-haspopup="true"
-                      aria-expanded={desktopDropdownOpen}
-                      className={`cursor-pointer inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${getLinkClass(active)}`}
-                    >
-                      {item.label}
-                      <ChevronDown
-                        size={14}
-                        strokeWidth={2.5}
-                        className={`transition-transform duration-200 ${
-                          desktopDropdownOpen ? "rotate-180" : ""
-                        }`}
-                        aria-hidden={true}
-                      />
-                    </button>
-                    {desktopDropdownOpen && (
-                      <div
-                        aria-label={`${item.label} Untermenü`}
-                        className="absolute left-0 top-full mt-2 min-w-[220px] rounded-2xl bg-white/95 backdrop-blur-md shadow-lg shadow-black/10 border border-gray-100 overflow-hidden"
-                      >
-                        {item.items.map((sub) => {
-                          const subActive = pathname === sub.href;
-                          return (
-                            <a
-                              key={sub.href}
-                              href={sub.href}
-                              className={`block px-5 py-3 text-sm font-semibold transition-colors duration-200 ${
-                                subActive
-                                  ? "bg-[#0d4f4f]/8 text-[#0d4f4f]"
-                                  : "text-[#333] hover:bg-[#0d4f4f]/8 hover:text-[#0d4f4f]"
-                              }`}
-                            >
-                              {sub.label}
-                            </a>
-                          );
-                        })}
-                      </div>
-                    )}
+                    <a href="/heilmassage-wien-1080" className={`block px-5 py-3 text-sm font-semibold transition-colors duration-200 ${pathname === "/heilmassage-wien-1080" ? "bg-[#0d4f4f]/8 text-[#0d4f4f]" : "text-[#333] hover:bg-[#0d4f4f]/8 hover:text-[#0d4f4f]"}`}>
+                      <span data-edit-id="nav-desktop-heilmassage">Heilmassage</span>
+                    </a>
+                    <a href="/sportmassage-wien" className={`block px-5 py-3 text-sm font-semibold transition-colors duration-200 ${pathname === "/sportmassage-wien" ? "bg-[#0d4f4f]/8 text-[#0d4f4f]" : "text-[#333] hover:bg-[#0d4f4f]/8 hover:text-[#0d4f4f]"}`}>
+                      <span data-edit-id="nav-desktop-sportmassage">Sportmassage</span>
+                    </a>
+                    <a href="/mobile-massage-wien" className={`block px-5 py-3 text-sm font-semibold transition-colors duration-200 ${pathname === "/mobile-massage-wien" ? "bg-[#0d4f4f]/8 text-[#0d4f4f]" : "text-[#333] hover:bg-[#0d4f4f]/8 hover:text-[#0d4f4f]"}`}>
+                      <span data-edit-id="nav-desktop-mobile">Mobile Massage</span>
+                    </a>
                   </div>
-                );
-              })}
+                )}
+              </div>
+              <a href="/preise" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${getLinkClass(isActiveLink("/preise"))}`}>
+                <span data-edit-id="nav-desktop-preise">Preise</span>
+              </a>
+              <a href="/gutscheine" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${getLinkClass(isActiveLink("/gutscheine"))}`}>
+                <span data-edit-id="nav-desktop-gutscheine">Gutscheine</span>
+              </a>
+              <a href="/ueber-mich" className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${getLinkClass(isActiveLink("/ueber-mich"))}`}>
+                <span data-edit-id="nav-desktop-about">Über mich</span>
+              </a>
               {isBookingPage ? (
                 <span className="ml-3 inline-flex items-center gap-2 rounded-full bg-[#0d4f4f] px-5 py-2.5 text-sm font-bold text-white">
                   <Check size={16} strokeWidth={3} aria-hidden={true} />
-                  Termin buchen
+                  <span data-edit-id="nav-desktop-cta-here">Termin buchen</span>
                 </span>
               ) : (
                 <a
@@ -264,7 +222,7 @@ export function Navbar({ initialPathname = "" }: { initialPathname?: string }) {
                   className="ml-3 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#e8654a] to-[#f2a93b] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[#e8654a]/25 transition-all duration-200 hover:shadow-xl hover:shadow-[#e8654a]/30 motion-safe:hover:scale-105"
                 >
                   <Calendar size={16} strokeWidth={2.5} aria-hidden={true} />
-                  Termin buchen
+                  <span data-edit-id="nav-desktop-cta">Termin buchen</span>
                 </a>
               )}
             </div>
@@ -289,71 +247,53 @@ export function Navbar({ initialPathname = "" }: { initialPathname?: string }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 bg-white overflow-y-auto">
           <div className="flex flex-col items-center pt-24 pb-12 gap-6 min-h-full">
-            {navItems.map((item) => {
-              if (item.kind === "link") {
-                const active = isActiveLink(item.href);
-                return (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={`text-2xl font-extrabold transition-colors ${getMobileLinkClass(active)}`}
-                  >
-                    {item.label}
+            <a href="/" onClick={() => setMobileOpen(false)} className={`text-2xl font-extrabold transition-colors ${getMobileLinkClass(isActiveLink("/"))}`}>
+              <span data-edit-id="nav-mobile-home">Startseite</span>
+            </a>
+            <div className="flex flex-col items-center gap-4">
+              <button
+                type="button"
+                onClick={() => setMobileDropdownOpen((o) => !o)}
+                aria-expanded={mobileDropdownOpen}
+                className={`cursor-pointer inline-flex items-center gap-2 text-2xl font-extrabold transition-colors ${getMobileLinkClass(["/heilmassage-wien-1080","/sportmassage-wien","/mobile-massage-wien"].includes(pathname))}`}
+              >
+                <span data-edit-id="nav-mobile-leistungen">Leistungen</span>
+                <ChevronDown
+                  size={20}
+                  strokeWidth={2.5}
+                  className={`transition-transform duration-200 ${
+                    mobileDropdownOpen ? "rotate-180" : ""
+                  }`}
+                  aria-hidden={true}
+                />
+              </button>
+              {mobileDropdownOpen && (
+                <div className="flex flex-col items-center gap-3">
+                  <a href="/heilmassage-wien-1080" onClick={() => setMobileOpen(false)} className={`text-lg font-bold transition-colors ${pathname === "/heilmassage-wien-1080" ? "text-[#0d4f4f]" : "text-[#555] hover:text-[#0d4f4f]"}`}>
+                    <span data-edit-id="nav-mobile-heilmassage">Heilmassage</span>
                   </a>
-                );
-              }
-              // dropdown — accordion in mobile
-              const active = isActiveDropdown(item);
-              return (
-                <div
-                  key={item.label}
-                  className="flex flex-col items-center gap-4"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setMobileDropdownOpen((o) => !o)}
-                    aria-expanded={mobileDropdownOpen}
-                    className={`cursor-pointer inline-flex items-center gap-2 text-2xl font-extrabold transition-colors ${getMobileLinkClass(active)}`}
-                  >
-                    {item.label}
-                    <ChevronDown
-                      size={20}
-                      strokeWidth={2.5}
-                      className={`transition-transform duration-200 ${
-                        mobileDropdownOpen ? "rotate-180" : ""
-                      }`}
-                      aria-hidden={true}
-                    />
-                  </button>
-                  {mobileDropdownOpen && (
-                    <div className="flex flex-col items-center gap-3">
-                      {item.items.map((sub) => {
-                        const subActive = pathname === sub.href;
-                        return (
-                          <a
-                            key={sub.href}
-                            href={sub.href}
-                            onClick={() => setMobileOpen(false)}
-                            className={`text-lg font-bold transition-colors ${
-                              subActive
-                                ? "text-[#0d4f4f]"
-                                : "text-[#555] hover:text-[#0d4f4f]"
-                            }`}
-                          >
-                            {sub.label}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  )}
+                  <a href="/sportmassage-wien" onClick={() => setMobileOpen(false)} className={`text-lg font-bold transition-colors ${pathname === "/sportmassage-wien" ? "text-[#0d4f4f]" : "text-[#555] hover:text-[#0d4f4f]"}`}>
+                    <span data-edit-id="nav-mobile-sportmassage">Sportmassage</span>
+                  </a>
+                  <a href="/mobile-massage-wien" onClick={() => setMobileOpen(false)} className={`text-lg font-bold transition-colors ${pathname === "/mobile-massage-wien" ? "text-[#0d4f4f]" : "text-[#555] hover:text-[#0d4f4f]"}`}>
+                    <span data-edit-id="nav-mobile-mobile">Mobile Massage</span>
+                  </a>
                 </div>
-              );
-            })}
+              )}
+            </div>
+            <a href="/preise" onClick={() => setMobileOpen(false)} className={`text-2xl font-extrabold transition-colors ${getMobileLinkClass(isActiveLink("/preise"))}`}>
+              <span data-edit-id="nav-mobile-preise">Preise</span>
+            </a>
+            <a href="/gutscheine" onClick={() => setMobileOpen(false)} className={`text-2xl font-extrabold transition-colors ${getMobileLinkClass(isActiveLink("/gutscheine"))}`}>
+              <span data-edit-id="nav-mobile-gutscheine">Gutscheine</span>
+            </a>
+            <a href="/ueber-mich" onClick={() => setMobileOpen(false)} className={`text-2xl font-extrabold transition-colors ${getMobileLinkClass(isActiveLink("/ueber-mich"))}`}>
+              <span data-edit-id="nav-mobile-about">Über mich</span>
+            </a>
             {isBookingPage ? (
               <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#0d4f4f] px-8 py-3.5 text-lg font-bold text-white">
                 <Check size={20} strokeWidth={3} aria-hidden={true} />
-                Termin buchen
+                <span data-edit-id="nav-mobile-cta-here">Termin buchen</span>
               </span>
             ) : (
               <a
@@ -362,7 +302,7 @@ export function Navbar({ initialPathname = "" }: { initialPathname?: string }) {
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#e8654a] to-[#f2a93b] px-8 py-3.5 text-lg font-bold text-white shadow-lg shadow-[#e8654a]/25"
               >
                 <Calendar size={20} strokeWidth={2.5} aria-hidden={true} />
-                Termin buchen
+                <span data-edit-id="nav-mobile-cta">Termin buchen</span>
               </a>
             )}
           </div>
